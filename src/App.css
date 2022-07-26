@@ -11,5 +11,23 @@ nav {
   max-height: 50px;
   padding: 10px;
   border-radius: 6px;
+  margin-top: 10px;
 }
 
+.flex {
+  display: flex;
+}
+
+.flex.column {
+  flex-direction: column;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.home-link {
+  cursor: pointer;
+  max-width: 300px;
+  margin: 0 auto;
+}
