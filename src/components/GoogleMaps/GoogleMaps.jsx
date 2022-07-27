@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { GoogleMap, InfoWindow, Marker, useLoadScript } from "@react-google-maps/api";
 
 const mapContainerStyle = {
-  width: '80vw',
+  width: '60vw',
   height: '80vh'
 }; // without width and height map won't be shown in the browser
 
@@ -47,7 +47,12 @@ export default function GoogleMaps() {
   if (!isLoaded) return "Loading maps"; // here we can render a spinner
 
   return <div>
-          <GoogleMap mapContainerStyle={mapContainerStyle} zoom={zoom} center={{lat, lng}} options={options}>
+          <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            zoom={zoom}
+            center={{lat, lng}}
+            options={options}
+          >
             {markers.map(m => {
               return <Marker
                         key={m.lng}
@@ -56,7 +61,10 @@ export default function GoogleMaps() {
                       />
             })}
             {selectedMarker ?
-            (<InfoWindow position={{lat: selectedMarker.lat, lng: selectedMarker.lng}} onCloseClick={() => setSelectedMarker(null)}>
+            (<InfoWindow
+              position={{lat: selectedMarker.lat, lng: selectedMarker.lng}}
+              onCloseClick={() => setSelectedMarker(null)}
+             >
               <div>Facility address and additional info</div>
             </InfoWindow>) : null}
           </GoogleMap>

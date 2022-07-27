@@ -6,11 +6,6 @@ const Selector = () => {
     <div className={style.wrapper}>
         <div className="flex column">
             <Link className={style.link} to="/maps">GoogleMaps</Link>
-            <Link className={style.link} to="/maps">GoogleMaps</Link>
-            <Link className={style.link} to="/maps">GoogleMaps</Link>
-            <Link className={style.link} to="/maps">GoogleMaps</Link>
-            <Link className={style.link} to="/maps">GoogleMaps</Link>
-            <Link className={style.link} to="/maps">GoogleMaps</Link>
         </div>
     </div>
   )
