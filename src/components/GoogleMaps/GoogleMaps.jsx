@@ -6,9 +6,29 @@ const mapContainerStyle = {
   height: '80vh'
 }; // without width and height map won't be shown in the browser
 
-const zoom = 12;
+const zoom = 15;
 
 const options = {
+  styles: [
+    {
+      "featureType": "poi",
+      "elementType": "labels.icon",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.medical",
+      "elementType": "labels.icon",
+      "stylers": [
+        {
+          "visibility": "on"
+        }
+      ]
+    }
+  ],
   disableDefaultUI: true,
   zoomControl: true
 }; // customize the map
@@ -30,6 +50,7 @@ export default function GoogleMaps() {
   const [lat, setLat] = useState(42.698334); // sofia default
   const [lng, setLng] = useState(23.319941); // sofia default
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [showMyselfInfo, setShowMyselfInfo] = useState(null);
   const geolocationAPI = navigator.geolocation;
 
   useEffect(() => {
@@ -46,27 +67,42 @@ export default function GoogleMaps() {
   if (loadError) return "Error loading maps"; // here we can render an error component
   if (!isLoaded) return "Loading maps"; // here we can render a spinner
 
-  return <div>
-          <GoogleMap
+  return  <GoogleMap
             mapContainerStyle={mapContainerStyle}
             zoom={zoom}
             center={{lat, lng}}
             options={options}
           >
-            {markers.map(m => {
+
+            <Marker position={{lat, lng}}
+              onClick={() => setShowMyselfInfo({lat, lng})}
+              title = {"You are here"}
+            />
+
+            {showMyselfInfo ?
+            (<InfoWindow
+              position={{lat, lng}}
+              onCloseClick={() => setShowMyselfInfo(null)}
+             >
+              <div>You are here</div>
+            </InfoWindow>) : null}
+
+            {markers.map((m, i) => {
               return <Marker
-                        key={m.lng}
+                        key={i}
                         position={{lat: m.lat, lng: m.lng}}
                         onClick={() => setSelectedMarker(m)}
+                        title = {"Click here for additional info"}
                       />
             })}
+
             {selectedMarker ?
             (<InfoWindow
               position={{lat: selectedMarker.lat, lng: selectedMarker.lng}}
               onCloseClick={() => setSelectedMarker(null)}
-             >
-              <div>Facility address and additional info</div>
+              >
+              <div>{selectedMarker.lng}</div>
             </InfoWindow>) : null}
+
           </GoogleMap>
-         </div>
 };
