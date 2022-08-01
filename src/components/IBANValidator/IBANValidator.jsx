@@ -5,16 +5,27 @@ import { validateIban } from '../../utils/helpers/ibanValidator';
 const IBANValidator = () => {
     const [iban, setIban] = useState('');
     const [valid, setValid] = useState(null);
-    
+
     const handleValidate = () => {
-        const isValid = validateIban(iban);
+        const newIban = removeWhiteSpaces();
+        const isValid = validateIban(newIban);
         setValid(isValid);
+    };
+
+    const removeWhiteSpaces = () => {
+        const newIban = iban.split(" ").join("");
+        setIban(newIban);
+        return newIban;
     };
 
   return (
     <div style={{display: "flex", alignItems:"center"}}>
-        <TextField sx={{width: "300px", marginRight: "20px"}} variant="outlined" onInput={(e) => setIban(e.target.value)} value={iban}>
-        </TextField>
+        <TextField
+            sx={{width: "300px", marginRight: "20px"}}
+            variant="outlined"
+            onInput={(e) => setIban(e.target.value)}
+            value={iban}
+        />
         <Button onClick={handleValidate}>Validate</Button>
         {valid !== null &&
             (valid ?
