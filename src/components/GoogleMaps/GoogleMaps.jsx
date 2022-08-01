@@ -6,16 +6,31 @@ const mapContainerStyle = {
   height: '80vh'
 }; // without width and height map won't be shown in the browser
 
-const zoom = 15;
-
 const options = {
   styles: [
     {
       "featureType": "poi",
-      "elementType": "labels.icon",
       "stylers": [
         {
           "visibility": "off"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "visibility": "simplified"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.medical",
+      "elementType": "labels",
+      "stylers": [
+        {
+          "visibility": "on"
         }
       ]
     },
@@ -27,61 +42,90 @@ const options = {
           "visibility": "on"
         }
       ]
+    },
+    {
+      "featureType": "transit",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
     }
   ],
   disableDefaultUI: true,
-  zoomControl: true
+  zoomControl: true,
+  libraries: ["places"]
 }; // customize the map
-
-const markers = [
-  {
-    lat: 43.271240,
-    lng: 26.936129
-  },
-  {
-    lat: 43.273240,
-    lng: 26.946129
-  }]; // TODO: add implementation for getting the nearest facilities based on current user location
 
 const API_KEY = "AIzaSyDVcr3hOO9abyCx6Mpw7cBuPWe9m_2iuV0"; // my api key
 
-
 export default function GoogleMaps() {
-  const [lat, setLat] = useState(42.698334); // sofia default
-  const [lng, setLng] = useState(23.319941); // sofia default
+  const [zoom, setZoom] = useState(7.25);
+  const [userMarker, setUserMarker] = useState({
+    lat: 42.7249925,
+    lng: 25.4833039
+  });
+  const [markers, setMarkers] = useState([
+    {
+      lat: 43.271240,
+      lng: 26.936129
+    },
+    {
+      lat: 43.273240,
+      lng: 26.946129
+    }]);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [showMyselfInfo, setShowMyselfInfo] = useState(null);
+
   const geolocationAPI = navigator.geolocation;
 
   useEffect(() => {
     geolocationAPI.getCurrentPosition((position) => {
       const { coords } = position;
-      setLat(coords.latitude);
-      setLng(coords.longitude);
+      setUserMarker({lat: coords.latitude, lng: coords.longitude})
+      setZoom(15);
   })},[geolocationAPI]);
 
   const {isLoaded, loadError} = useLoadScript({
-    googleMapsApiKey: API_KEY
+    googleMapsApiKey: API_KEY,
+    libraries: ['geometry', 'places']
   });
 
+  const onMapClick = (e) => {
+    let marker = {lat: e.latLng.lat(), lng: e.latLng.lng()};
+    setUserMarker(marker);
+    
+    let res = markers.reduce(function (prev, curr) {
+      console.log(window.google.maps)
+      const cpos = window.google.maps.geometry.spherical.computeDistanceBetween(userMarker, curr.position);
+      const ppos = window.google.maps.geometry.spherical.computeDistanceBetween(userMarker, prev.position);
+  
+      return cpos < ppos ? curr : prev;
+  
+    });
+
+    console.log(res)
+  };
+
   if (loadError) return "Error loading maps"; // here we can render an error component
-  if (!isLoaded) return "Loading maps"; // here we can render a spinner
+  if (!isLoaded) return "Loading maps"; // here we can render a spinner 
 
   return  <GoogleMap
             mapContainerStyle={mapContainerStyle}
             zoom={zoom}
-            center={{lat, lng}}
+            center={userMarker}
             options={options}
+            onClick={onMapClick}
           >
-
-            <Marker position={{lat, lng}}
-              onClick={() => setShowMyselfInfo({lat, lng})}
+            
+            {userMarker && <Marker position={userMarker}
+              onClick={() => setShowMyselfInfo(userMarker)}
               title = {"You are here"}
-            />
+            />}
 
             {showMyselfInfo ?
             (<InfoWindow
-              position={{lat, lng}}
+              position={userMarker}
               onCloseClick={() => setShowMyselfInfo(null)}
              >
               <div>You are here</div>
@@ -106,3 +150,8 @@ export default function GoogleMaps() {
 
           </GoogleMap>
 };
+
+
+// IBAN validator
+
+// t2, etap 3 hardcoded
