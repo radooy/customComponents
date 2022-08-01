@@ -150,8 +150,3 @@ export default function GoogleMaps() {
 
           </GoogleMap>
 };
-
-
-// IBAN validator
-
-// t2, etap 3 hardcoded
