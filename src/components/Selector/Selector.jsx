@@ -7,6 +7,9 @@ const Selector = () => {
         <div className="flex column">
             <Link className={style.link} to="/maps">GoogleMaps</Link>
             <Link className={style.link} to="/iban">Iban</Link>
+            <Link className={style.link} to="/card">Card</Link>
+            <Link className={style.link} to="/flipper">Flipper</Link>
+            <Link className={style.link} to="/date">Date picker BG</Link>
         </div>
     </div>
   )

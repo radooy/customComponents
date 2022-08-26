@@ -1,0 +1,57 @@
+export const documentsNeeded = {
+    examination: {
+        ambulatorySheet: '',
+        invoice: '',
+        receipt: '',
+    },
+    medicalTests: {
+        ambulatorySheet: '',
+        invoice: '',
+        receipt: '',
+        referral: '',
+        results: '',
+        diagnostics: '',
+        physiotherapy: '',
+    },
+    hospitalCare: {
+        invoice: '',
+        receipt: '',
+        dischargeSummary: '',
+        results: '',
+        diagnostics: '',
+        teamDeclaration: '',
+    },
+    sanitarianCare: {
+        dischargeSummary: '',
+        dischargeSummarySanitary: '',
+        invoice: '',
+        receipt: '',
+    },
+    sanitarianTransport: {
+        medicalDocumentsForTransport: '',
+        invoice: '',
+        receipt: '',
+    },
+    medicines: {
+        ambulatorySheet: '',
+        invoice: '',
+        receipt: '',
+        dischargeSummary: '',
+        prescription: '',
+    },
+    medicinesPartiallyPaidByNZOK: {
+        ambulatorySheet: '',
+        invoice: '',
+        receipt: '',
+        copyOfPrescriptionBook: '',
+    },
+    dentalCare: {
+        ambulatorySheet: '',
+        invoice: '',
+        receipt: '',
+        prescription: '',
+        dentalHealthStatus: '',
+        panoramicTeethPicture: '',
+        segmentalTeethPictures: '',
+    },
+};

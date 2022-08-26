@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { GoogleMap, InfoWindow, Marker, useLoadScript } from "@react-google-maps/api";
+import jsonData from "../../utils/data/facilities.json";
 
 const mapContainerStyle = {
   width: '60vw',
@@ -26,24 +27,6 @@ const options = {
       ]
     },
     {
-      "featureType": "poi.medical",
-      "elementType": "labels",
-      "stylers": [
-        {
-          "visibility": "on"
-        }
-      ]
-    },
-    {
-      "featureType": "poi.medical",
-      "elementType": "labels.icon",
-      "stylers": [
-        {
-          "visibility": "on"
-        }
-      ]
-    },
-    {
       "featureType": "transit",
       "stylers": [
         {
@@ -64,18 +47,10 @@ export default function GoogleMaps() {
   const [userMarker, setUserMarker] = useState({
     lat: 42.7249925,
     lng: 25.4833039
-  });
-  const [markers, setMarkers] = useState([
-    {
-      lat: 43.271240,
-      lng: 26.936129
-    },
-    {
-      lat: 43.273240,
-      lng: 26.946129
-    }]);
+  }); // Bulgaria center by default
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [showMyselfInfo, setShowMyselfInfo] = useState(null);
+  const [markers, setMarkers] = useState([]);
 
   const geolocationAPI = navigator.geolocation;
 
@@ -84,7 +59,8 @@ export default function GoogleMaps() {
       const { coords } = position;
       setUserMarker({lat: coords.latitude, lng: coords.longitude})
       setZoom(15);
-  })},[geolocationAPI]);
+      setMarkers([...jsonData.emergencyPayback, ...jsonData.emergencySubscribed, ...jsonData.hospitalCare, ...jsonData.outpatientCare]);
+  })},[]);
 
   const {isLoaded, loadError} = useLoadScript({
     googleMapsApiKey: API_KEY,
@@ -92,31 +68,28 @@ export default function GoogleMaps() {
   });
 
   const onMapClick = (e) => {
-    let marker = {lat: e.latLng.lat(), lng: e.latLng.lng()};
+    const marker = {lat: e.latLng.lat(), lng: e.latLng.lng()};
     setUserMarker(marker);
-    
-    let res = markers.reduce(function (prev, curr) {
-      console.log(window.google.maps)
-      const cpos = window.google.maps.geometry.spherical.computeDistanceBetween(userMarker, curr.position);
-      const ppos = window.google.maps.geometry.spherical.computeDistanceBetween(userMarker, prev.position);
-  
-      return cpos < ppos ? curr : prev;
-  
-    });
-
-    console.log(res)
   };
 
   if (loadError) return "Error loading maps"; // here we can render an error component
-  if (!isLoaded) return "Loading maps"; // here we can render a spinner 
+  if (!isLoaded) return "Loading maps"; // here we can render a spinner
 
-  return  <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            zoom={zoom}
-            center={userMarker}
-            options={options}
-            onClick={onMapClick}
-          >
+  return  <div>
+            <div>Filters</div>
+            <ul style={{listStyleType: "none"}}>
+              <li onClick={() => setMarkers([...jsonData.hospitalCare, ...jsonData.outpatientCare])} style={{cursor: "pointer"}}>Здравни заведения</li>
+              <li onClick={() => setMarkers([...jsonData.emergencyPayback, ...jsonData.emergencySubscribed])} style={{cursor: "pointer"}}>Неотложна помощ</li>
+              <li onClick={() => setMarkers(jsonData.emergencyPayback)} style={{cursor: "pointer"}}>Възстановяване на разходи</li>
+              <li onClick={() => setMarkers(jsonData.emergencySubscribed)} style={{cursor: "pointer"}}>Абонаментно обслужване</li>
+            </ul>
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              zoom={zoom}
+              center={userMarker}
+              options={options}
+              onClick={onMapClick}
+            >
             
             {userMarker && <Marker position={userMarker}
               onClick={() => setShowMyselfInfo(userMarker)}
@@ -127,7 +100,7 @@ export default function GoogleMaps() {
             (<InfoWindow
               position={userMarker}
               onCloseClick={() => setShowMyselfInfo(null)}
-             >
+            >
               <div>You are here</div>
             </InfoWindow>) : null}
 
@@ -136,7 +109,7 @@ export default function GoogleMaps() {
                         key={i}
                         position={{lat: m.lat, lng: m.lng}}
                         onClick={() => setSelectedMarker(m)}
-                        title = {"Click here for additional info"}
+                        title = {m.address}
                       />
             })}
 
@@ -144,9 +117,14 @@ export default function GoogleMaps() {
             (<InfoWindow
               position={{lat: selectedMarker.lat, lng: selectedMarker.lng}}
               onCloseClick={() => setSelectedMarker(null)}
+              maxWidth="100px"
               >
-              <div>{selectedMarker.lng}</div>
+                <>
+                  <h5>{selectedMarker.name}</h5>
+                  <div>{selectedMarker.address}</div>
+                </>
             </InfoWindow>) : null}
 
           </GoogleMap>
+</div>
 };

@@ -1,0 +1,37 @@
+.wrapper {
+    background-color: transparent;
+    width: 450px;
+    height: 300px;
+    perspective: 1000px;
+}
+
+.card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.front,
+.back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.back {
+    color: white;
+    transform: rotateY(180deg);
+}
+
+.front {
+    color: black;
+}
