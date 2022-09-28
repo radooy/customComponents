@@ -6,6 +6,7 @@ import IBANValidator from './components/IBANValidator/IBANValidator';
 import Card from './components/Card/Card';
 import CardFlipper from './components/CardFlipper/CardFlipper';
 import DatePickerBG from './components/DatePickerBG/DatePickerBG';
+import ScrollTo from './components/ScrollTo/ScrollTo';
 
 function App() {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ function App() {
           <Route path="/card" element={<Card />} />
           <Route path="/flipper" element={<CardFlipper />} />
           <Route path="/date" element={<DatePickerBG />} />
+          <Route path="/scroll-to" element={<ScrollTo />} />
         </Routes>
       </div>
     </div>

@@ -10,6 +10,7 @@ const Selector = () => {
             <Link className={style.link} to="/card">Card</Link>
             <Link className={style.link} to="/flipper">Flipper</Link>
             <Link className={style.link} to="/date">Date picker BG</Link>
+            <Link className={style.link} to="/scroll-to">ScrollTo</Link>
         </div>
     </div>
   )
